@@ -1,0 +1,7 @@
+{
+  "name": "Random Players Game",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
