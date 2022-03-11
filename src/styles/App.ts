@@ -9,6 +9,14 @@ const slideIn = keyframes`
   }
 `;
 
+export const UsersContainer = styled.div`
+  align-items: flex-start;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+`;
+
 export const ModalContainer = styled.div`
   animation: ${slideIn} ease-in-out 0.4s forwards;
   background-color: #d8d8d8;
@@ -33,5 +41,31 @@ export const ModalContainerClose = styled.div`
 
   &::before {
     content: "X";
+  }
+`;
+
+export const AddUserButton = styled.div`
+  align-items: center;
+  display: flex;
+  height: 5.8rem;
+  justify-content: center;
+  width: 5.8rem;
+  position: fixed;
+  left: 50%;
+  margin-left: -2.5rem;
+  bottom: 2rem;
+  z-index: 10;
+
+  a {
+    background-color: #781db9;
+    border-radius: 90px;
+    color: #ffffff;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-decoration: none;
+    font-size: 2rem;
   }
 `;

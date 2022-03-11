@@ -15,6 +15,17 @@ export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
   return response.data;
 });
 
+export const addNewPost = createAsyncThunk(
+  "posts/addNewPost",
+  async (initialPost) => {
+    const response = await axios.post(
+      "https://620c58aab5736325938c1678.mockapi.io/api/v1/players",
+      initialPost
+    );
+    return response.data;
+  }
+) as any;
+
 const usersSlice = createSlice({
   name: "users",
   initialState,
@@ -51,6 +62,9 @@ const usersSlice = createSlice({
       .addCase(fetchPosts.rejected, (state: RootState, action: any) => {
         state.status = "failed";
         state.error = action.error.message;
+      })
+      .addCase(addNewPost.fulfilled, (state: RootState, action: any) => {
+        state.items.push(action.payload);
       });
   },
 });

@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "Random Players Game",
+	"webDir": "build",
+	"bundledWebRuntime": false
+}
