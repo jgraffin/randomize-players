@@ -46,6 +46,7 @@ import {
 import { addNewPost, itemUpdated } from "./features/users/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
+import Header from "./components/header/Header";
 
 setupIonicReact();
 
@@ -239,6 +240,7 @@ const AddUser = () => {
 
 const App: React.FC = () => (
   <IonApp>
+    <Header />
     <IonReactRouter>
       <UsersContainer>
         <UsersList />

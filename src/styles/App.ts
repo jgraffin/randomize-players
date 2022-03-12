@@ -47,12 +47,12 @@ export const ModalContainerClose = styled.div`
 export const AddUserButton = styled.div`
   align-items: center;
   display: flex;
-  height: 5.8rem;
+  height: 4.2rem;
   justify-content: center;
-  width: 5.8rem;
+  width: 4.2rem;
   position: fixed;
   left: 50%;
-  margin-left: -2.5rem;
+  margin-left: -2.1rem;
   bottom: 2rem;
   z-index: 10;
 

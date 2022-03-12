@@ -46,6 +46,24 @@ const usersSlice = createSlice({
         }
       );
     },
+    itemDeleted(state: RootState, action) {
+      const { id, name, team } = action.payload;
+      const existingUser = state.items.find((item: any) => item.id === id);
+      if (existingUser) {
+        existingUser.name = name;
+        existingUser.team = team;
+      }
+
+      axios.delete(
+        `https://620c58aab5736325938c1678.mockapi.io/api/v1/players/${id}`,
+        {
+          data: {
+            name,
+            team,
+          },
+        }
+      );
+    },
   },
   extraReducers(builder: any) {
     builder
@@ -69,7 +87,7 @@ const usersSlice = createSlice({
   },
 });
 
-export const { itemUpdated } = usersSlice.actions;
+export const { itemUpdated, itemDeleted } = usersSlice.actions;
 
 export default usersSlice.reducer;
 

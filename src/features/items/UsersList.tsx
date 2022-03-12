@@ -3,14 +3,18 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { RootState } from "../../app/store";
-import { AddUserButton } from "../../styles/App";
-import { fetchPosts, selectAllItems } from "../users/usersSlice";
+import { itemDeleted, fetchPosts, selectAllItems } from "../users/usersSlice";
+import { ContainerList } from "./ContainerList";
 
 const User = ({ post }: any) => {
+  const dispatch = useDispatch();
+  const onDeletePostClicked = async (id: string) => {
+    dispatch(itemDeleted({ id }));
+  };
+
   return (
-    <IonItem>
+    <IonItem className="ion-no-padding ion-no-border" key={post.id}>
       <Link
-        key={post.id}
         to={{
           pathname: `/editUser/${post.id}`,
         }}
@@ -24,6 +28,11 @@ const User = ({ post }: any) => {
           <h1>{post.name}</h1>
         </div>
       </Link>
+      <div>
+        <IonButton onClick={() => onDeletePostClicked(post.id)}>
+          delete
+        </IonButton>
+      </div>
     </IonItem>
   );
 };
@@ -56,5 +65,5 @@ export const UsersList = () => {
     content = <div>{error}</div>;
   }
 
-  return <>{content}</>;
+  return <ContainerList>{content}</ContainerList>;
 };
