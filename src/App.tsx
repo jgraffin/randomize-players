@@ -15,6 +15,11 @@ import {
   IonTitle,
   IonToolbar,
   setupIonicReact,
+  withIonLifeCycle,
+  useIonViewDidEnter,
+  useIonViewDidLeave,
+  useIonViewWillEnter,
+  useIonViewWillLeave,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 
@@ -43,16 +48,109 @@ import {
   ModalContainerClose,
   UsersContainer,
 } from "./styles/App";
-import { addNewPost, itemUpdated } from "./features/users/usersSlice";
+import { addPost, itemUpdated } from "./features/users/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./components/header/Header";
+import Home from "./pages/Home";
 
 setupIonicReact();
 
-const Modal = ({ location, match }: any) => {
+const AddUser = ({ match }: any) => {
   console.log("match", match);
-  console.log("location", location);
+
+  const [name, setName] = useState("");
+  const [team, setTeam] = useState("");
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const [addRequestStatus, setAddRequestStatus] = useState("idle");
+  const canSave = [name, team].every(Boolean) && addRequestStatus === "idle";
+
+  const onNameChanged = (e: any) => setName(e.target.value);
+  const onTeamChanged = (e: any) => setTeam(e.target.value);
+
+  const onSavePostClicked = async () => {
+    if (canSave) {
+      try {
+        setAddRequestStatus("pending");
+        await dispatch(addPost({ name, team })).unwrap();
+        setName("");
+        setTeam("");
+      } catch (err) {
+        console.error("Failed to save the post: ", err);
+      } finally {
+        setAddRequestStatus("idle");
+        onDismissPostClicked();
+      }
+    }
+  };
+
+  const onDismissPostClicked = () => {
+    history.push(`/`);
+  };
+
+  return (
+    <ModalContainer>
+      <ModalContainerClose>
+        <Link
+          to={{
+            pathname: `/`,
+          }}
+        >
+          close
+        </Link>
+      </ModalContainerClose>
+      <IonList>
+        <IonItem>
+          <IonInput
+            value={name}
+            placeholder="Name"
+            onIonChange={onNameChanged}
+          ></IonInput>
+        </IonItem>
+        <IonItem>
+          <IonLabel>Conexão</IonLabel>
+          <IonSelect
+            value={team}
+            placeholder="Selecione"
+            onIonChange={onTeamChanged}
+          >
+            <IonSelectOption value="Manchester City">
+              Manchester City
+            </IonSelectOption>
+            <IonSelectOption value="Real Madrid">Real Madrid</IonSelectOption>
+            <IonSelectOption value="Chealsea">Chealsea</IonSelectOption>
+            <IonSelectOption value="Arsenal">Arsenal</IonSelectOption>
+          </IonSelect>
+        </IonItem>
+      </IonList>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <IonButton
+          expand="full"
+          shape="round"
+          color="success"
+          type="button"
+          onClick={onSavePostClicked}
+        >
+          Salvar
+        </IonButton>
+        <IonButton
+          expand="full"
+          shape="round"
+          fill="outline"
+          color="dark"
+          type="button"
+          onClick={onDismissPostClicked}
+        >
+          Fechar
+        </IonButton>
+      </div>
+    </ModalContainer>
+  );
+};
+
+const EditUser = ({ location, match }: any) => {
+  console.log("match", match);
 
   const { userId } = match.params;
 
@@ -146,123 +244,22 @@ const Modal = ({ location, match }: any) => {
   );
 };
 
-const AddUser = () => {
-  const [name, setName] = useState("");
-  const [team, setTeam] = useState("");
-  const dispatch = useDispatch();
-  const history = useHistory();
-  const [addRequestStatus, setAddRequestStatus] = useState("idle");
-  const canSave = [name, team].every(Boolean) && addRequestStatus === "idle";
-
-  const onNameChanged = (e: any) => setName(e.target.value);
-  const onTeamChanged = (e: any) => setTeam(e.target.value);
-
-  const onSavePostClicked = async () => {
-    if (canSave) {
-      try {
-        setAddRequestStatus("pending");
-        await dispatch(addNewPost({ name, team })).unwrap();
-        setName("");
-        setTeam("");
-      } catch (err) {
-        console.error("Failed to save the post: ", err);
-      } finally {
-        setAddRequestStatus("idle");
-        onDismissPostClicked();
-      }
-    }
-  };
-
-  const onDismissPostClicked = () => {
-    history.push(`/`);
-  };
-
+const App: React.FC = () => {
   return (
-    <ModalContainer>
-      <ModalContainerClose>
-        <Link
-          to={{
-            pathname: `/`,
-            state: { modal: false },
-          }}
-        >
-          close
-        </Link>
-      </ModalContainerClose>
-      <IonList>
-        <IonItem>
-          <IonInput
-            value={name}
-            placeholder="Name"
-            onIonChange={onNameChanged}
-          ></IonInput>
-        </IonItem>
-        <IonItem>
-          <IonLabel>Conexão</IonLabel>
-          <IonSelect
-            value={team}
-            placeholder="Selecione"
-            onIonChange={onTeamChanged}
-          >
-            <IonSelectOption value="Manchester City">
-              Manchester City
-            </IonSelectOption>
-            <IonSelectOption value="Real Madrid">Real Madrid</IonSelectOption>
-            <IonSelectOption value="Chealsea">Chealsea</IonSelectOption>
-            <IonSelectOption value="Arsenal">Arsenal</IonSelectOption>
-          </IonSelect>
-        </IonItem>
-      </IonList>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <IonButton
-          expand="full"
-          shape="round"
-          color="success"
-          type="button"
-          onClick={onSavePostClicked}
-        >
-          Salvar
-        </IonButton>
-        <IonButton
-          expand="full"
-          shape="round"
-          fill="outline"
-          color="dark"
-          type="button"
-          onClick={onDismissPostClicked}
-        >
-          Fechar
-        </IonButton>
-      </div>
-    </ModalContainer>
-  );
-};
-
-const App: React.FC = () => (
-  <IonApp>
-    <Header />
-    <IonReactRouter>
-      <UsersContainer>
-        <UsersList />
-        <AddUserButton>
-          <Link
-            to={{
-              pathname: "/addUser",
-            }}
-          >
-            +
-          </Link>
-        </AddUserButton>
-      </UsersContainer>
-      <IonRouterOutlet>
+    <IonApp>
+      <IonReactRouter>
+        <Header />
+        <UsersContainer>
+          <UsersList />
+        </UsersContainer>
         <Switch>
           <Route path="/addUser" component={AddUser} />
-          <Route path="/editUser/:userId" component={Modal} />
+          <Route path="/editUser/:userId" component={EditUser} />
           <Redirect to="/" />
         </Switch>
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
-);
+      </IonReactRouter>
+    </IonApp>
+  );
+};
 
 export default App;

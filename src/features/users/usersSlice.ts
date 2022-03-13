@@ -15,8 +15,8 @@ export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
   return response.data;
 });
 
-export const addNewPost = createAsyncThunk(
-  "posts/addNewPost",
+export const addPost = createAsyncThunk(
+  "posts/addPost",
   async (initialPost) => {
     const response = await axios.post(
       "https://620c58aab5736325938c1678.mockapi.io/api/v1/players",
@@ -46,7 +46,7 @@ const usersSlice = createSlice({
         }
       );
     },
-    itemDeleted(state: RootState, action) {
+    deletePost(state: RootState, action) {
       const { id, name, team } = action.payload;
       const existingUser = state.items.find((item: any) => item.id === id);
       if (existingUser) {
@@ -81,13 +81,13 @@ const usersSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message;
       })
-      .addCase(addNewPost.fulfilled, (state: RootState, action: any) => {
+      .addCase(addPost.fulfilled, (state: RootState, action: any) => {
         state.items.push(action.payload);
       });
   },
 });
 
-export const { itemUpdated, itemDeleted } = usersSlice.actions;
+export const { itemUpdated, deletePost } = usersSlice.actions;
 
 export default usersSlice.reducer;
 

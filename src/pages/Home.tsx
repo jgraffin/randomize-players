@@ -5,8 +5,9 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import { Link } from "react-router-dom";
 import { UsersList } from "../features/items/UsersList";
-import "../components/ModalContainer.css";
+import { UsersContainer, AddUserButton } from "../styles/App";
 
 export const Modals = ({ location }: any) => {
   const { state = {} } = location;
@@ -18,7 +19,7 @@ export const Modals = ({ location }: any) => {
   );
 };
 
-const Homea = () => {
+const Home = () => {
   return (
     <IonPage>
       <IonHeader>
@@ -27,10 +28,22 @@ const Homea = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <UsersList />
+        <UsersContainer>
+          <UsersList />
+          <AddUserButton>
+            <Link
+              to={{
+                pathname: "/addUser",
+                state: { modal: true },
+              }}
+            >
+              +
+            </Link>
+          </AddUserButton>
+        </UsersContainer>
       </IonContent>
     </IonPage>
   );
 };
 
-export default Homea;
+export default Home;

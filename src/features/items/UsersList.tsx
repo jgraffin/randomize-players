@@ -1,15 +1,21 @@
-import { IonButton, IonItem } from "@ionic/react";
+import { IonButton, IonItem, IonRippleEffect } from "@ionic/react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { RootState } from "../../app/store";
-import { itemDeleted, fetchPosts, selectAllItems } from "../users/usersSlice";
+import {
+  AddUserButton,
+  AreaButtons,
+  PlayersAmount,
+  RandomizePlayersButton,
+} from "../../styles/App";
+import { deletePost, fetchPosts, selectAllItems } from "../users/usersSlice";
 import { ContainerList } from "./ContainerList";
 
 const User = ({ post }: any) => {
   const dispatch = useDispatch();
-  const onDeletePostClicked = async (id: string) => {
-    dispatch(itemDeleted({ id }));
+  const onDeletePostClicked = (id: string) => {
+    dispatch(deletePost({ id }));
   };
 
   return (
@@ -45,6 +51,33 @@ export const UsersList = () => {
   const postStatus = useSelector((state: RootState) => state.users.status);
   const error = useSelector((state: RootState) => state.users.error);
 
+  const playersAmount = () => {
+    const singular = "JOGADOR";
+    const amount = posts.length;
+    let paragraph;
+    if (amount > 1) {
+      paragraph = (
+        <p>
+          <strong>{"0" + amount}</strong> {`${singular}ES`}
+        </p>
+      );
+    } else if (amount === 1) {
+      paragraph = (
+        <p>
+          <strong>{"0" + amount}</strong> {`${singular}`}
+        </p>
+      );
+    } else if (amount > 9) {
+      paragraph = (
+        <p>
+          <strong>{"0" + amount}</strong> {`${singular}ES`}
+        </p>
+      );
+    }
+
+    return paragraph;
+  };
+
   useEffect(() => {
     if (postStatus === "idle") {
       dispatch(fetchPosts());
@@ -65,5 +98,27 @@ export const UsersList = () => {
     content = <div>{error}</div>;
   }
 
-  return <ContainerList>{content}</ContainerList>;
+  return (
+    <>
+      <PlayersAmount>{playersAmount()}</PlayersAmount>
+      <ContainerList>{content}</ContainerList>
+      <AreaButtons>
+        <AddUserButton className="ion-activatable ripple-parent">
+          <Link
+            to={{
+              pathname: `/addUser`,
+            }}
+          >
+            +
+          </Link>
+          <IonRippleEffect></IonRippleEffect>
+        </AddUserButton>
+        {posts.length > 2 && (
+          <RandomizePlayersButton className="ion-activatable ripple-parent">
+            <IonRippleEffect></IonRippleEffect>
+          </RandomizePlayersButton>
+        )}
+      </AreaButtons>
+    </>
+  );
 };
