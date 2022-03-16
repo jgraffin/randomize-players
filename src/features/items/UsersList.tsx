@@ -19,27 +19,29 @@ const User = ({ post }: any) => {
   };
 
   return (
-    <IonItem className="ion-no-padding ion-no-border" key={post.id}>
-      <Link
-        to={{
-          pathname: `/editUser/${post.id}`,
-        }}
-        style={{ display: "flex", alignItems: "center" }}
-      >
-        <div style={{ width: "60px" }}>
-          <img src={`./assets/images/${post.id}.png`} alt={post.team} />
+    post.id && (
+      <IonItem className="ion-no-padding ion-no-border" key={post.id}>
+        <Link
+          to={{
+            pathname: `/editUser/${post.id}`,
+          }}
+          style={{ display: "flex", alignItems: "center" }}
+        >
+          <div style={{ width: "60px" }}>
+            <img src={`./assets/images/${post.id}.png`} alt={post.team} />
+          </div>
+          <div style={{ marginLeft: "20px" }}>
+            <h5>{post.team}</h5>
+            <h1>{post.name}</h1>
+          </div>
+        </Link>
+        <div>
+          <IonButton onClick={() => onDeletePostClicked(post.id)}>
+            delete
+          </IonButton>
         </div>
-        <div style={{ marginLeft: "20px" }}>
-          <h5>{post.team}</h5>
-          <h1>{post.name}</h1>
-        </div>
-      </Link>
-      <div>
-        <IonButton onClick={() => onDeletePostClicked(post.id)}>
-          delete
-        </IonButton>
-      </div>
-    </IonItem>
+      </IonItem>
+    )
   );
 };
 
@@ -90,7 +92,7 @@ export const UsersList = () => {
     content = "Loading...";
   } else if (postStatus === "succeeded") {
     content = posts.length ? (
-      posts.map((post: any) => <User key={post.id} post={post} />)
+      posts.map((post: any) => <User key={post.id && post.id} post={post} />)
     ) : (
       <NoResults />
     );
@@ -100,7 +102,7 @@ export const UsersList = () => {
 
   return (
     <>
-      <PlayersAmount>{playersAmount()}</PlayersAmount>
+      {/* <PlayersAmount>{playersAmount()}</PlayersAmount> */}
       <ContainerList>{content}</ContainerList>
       <AreaButtons>
         <AddUserButton className="ion-activatable ripple-parent">
@@ -113,11 +115,11 @@ export const UsersList = () => {
           </Link>
           <IonRippleEffect></IonRippleEffect>
         </AddUserButton>
-        {posts.length > 2 && (
+        {/* {posts.length > 2 && (
           <RandomizePlayersButton className="ion-activatable ripple-parent">
             <IonRippleEffect></IonRippleEffect>
           </RandomizePlayersButton>
-        )}
+        )} */}
       </AreaButtons>
     </>
   );

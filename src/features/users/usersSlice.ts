@@ -2,6 +2,12 @@ import axios from "axios";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 
+type UsersType = {
+  id: string;
+  name?: string;
+  team?: string;
+};
+
 const initialState = {
   items: [],
   status: "idle",
@@ -12,6 +18,7 @@ export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
   const response = await axios.get(
     "https://620c58aab5736325938c1678.mockapi.io/api/v1/players"
   );
+  console.log(response.data);
   return response.data;
 });
 
@@ -30,7 +37,7 @@ const usersSlice = createSlice({
   name: "users",
   initialState,
   reducers: {
-    itemUpdated(state: RootState, action) {
+    itemUpdated(state: RootState, action: PayloadAction<UsersType>) {
       const { id, name, team } = action.payload;
       const existingUser = state.items.find((item: any) => item.id === id);
       if (existingUser) {
@@ -46,23 +53,20 @@ const usersSlice = createSlice({
         }
       );
     },
-    deletePost(state: RootState, action) {
-      const { id, name, team } = action.payload;
-      const existingUser = state.items.find((item: any) => item.id === id);
-      if (existingUser) {
-        existingUser.name = name;
-        existingUser.team = team;
-      }
+    deletePost(state: RootState, action: PayloadAction<{ id: string }>) {
+      const { id } = action.payload;
 
       axios.delete(
         `https://620c58aab5736325938c1678.mockapi.io/api/v1/players/${id}`,
         {
           data: {
-            name,
-            team,
+            id,
           },
         }
       );
+
+      const users = state.items.filter((user: any) => user.id !== id);
+      state.items = users;
     },
   },
   extraReducers(builder: any) {
