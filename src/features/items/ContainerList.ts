@@ -18,4 +18,17 @@ export const ContainerList = styled.div`
     padding: 0;
     margin: 0;
   }
+
+  p {
+    color: var(--ion-color-light);
+    display: block;
+    font-size: 1.25rem;
+    line-height: 1.8rem;
+    padding: 0 2rem;
+    text-align: center;
+
+    strong {
+      font-family: var(--font-family-bold);
+    }
+  }
 `;

@@ -2,26 +2,17 @@ import { Link, Redirect, Route, Switch, useHistory } from "react-router-dom";
 import {
   IonApp,
   IonButton,
-  IonContent,
-  IonHeader,
   IonInput,
   IonItem,
   IonLabel,
   IonList,
-  IonPage,
-  IonRouterOutlet,
   IonSelect,
   IonSelectOption,
-  IonTitle,
-  IonToolbar,
+  IonSpinner,
   setupIonicReact,
-  withIonLifeCycle,
-  useIonViewDidEnter,
-  useIonViewDidLeave,
-  useIonViewWillEnter,
-  useIonViewWillLeave,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
+import Shield1 from "./images/1.png";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -43,22 +34,19 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.css";
 import { UsersList } from "./features/items/UsersList";
 import {
-  AddUserButton,
   ModalContainer,
   ModalContainerClose,
   UsersContainer,
 } from "./styles/App";
 import { addPost, itemUpdated } from "./features/users/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Header from "./components/header/Header";
-import Home from "./pages/Home";
+import { RootState } from "./app/store";
 
 setupIonicReact();
 
-const AddUser = ({ match }: any) => {
-  console.log("match", match);
-
+const AddUser = () => {
   const [name, setName] = useState("");
   const [team, setTeam] = useState("");
   const dispatch = useDispatch();
@@ -79,79 +67,70 @@ const AddUser = ({ match }: any) => {
       } catch (err) {
         console.error("Failed to save the post: ", err);
       } finally {
-        setAddRequestStatus("idle");
-        onDismissPostClicked();
+        setAddRequestStatus("pending");
+        history.push(`/`);
       }
     }
   };
 
-  const onDismissPostClicked = () => {
-    history.push(`/`);
-  };
-
   return (
     <ModalContainer>
-      <ModalContainerClose>
-        <Link
-          to={{
-            pathname: `/`,
-          }}
-        >
-          close
-        </Link>
-      </ModalContainerClose>
-      <IonList>
-        <IonItem>
-          <IonInput
-            value={name}
-            placeholder="Name"
-            onIonChange={onNameChanged}
-          ></IonInput>
-        </IonItem>
-        <IonItem>
-          <IonLabel>Conexão</IonLabel>
-          <IonSelect
-            value={team}
-            placeholder="Selecione"
-            onIonChange={onTeamChanged}
+      {addRequestStatus !== "pending" ? (
+        <>
+          <ModalContainerClose>
+            <Link
+              to={{
+                pathname: `/`,
+              }}
+            ></Link>
+          </ModalContainerClose>
+          <IonList>
+            <IonItem>
+              <IonLabel position="floating">Nome do jogador</IonLabel>
+              <IonInput
+                value={name}
+                placeholder="Name"
+                onIonChange={onNameChanged}
+                type="text"
+                autocapitalize="true"
+              ></IonInput>
+            </IonItem>
+            <IonItem>
+              <IonLabel position="floating">Time</IonLabel>
+              <IonSelect
+                value={team}
+                placeholder="Selecione"
+                onIonChange={onTeamChanged}
+              >
+                <IonSelectOption value="Manchester United">
+                  Manchester United
+                </IonSelectOption>
+                <IonSelectOption value="Real Madrid">
+                  Real Madrid
+                </IonSelectOption>
+                <IonSelectOption value="Chealsea">Chealsea</IonSelectOption>
+                <IonSelectOption value="Arsenal">Arsenal</IonSelectOption>
+              </IonSelect>
+            </IonItem>
+          </IonList>
+          <IonButton
+            expand="block"
+            shape="round"
+            color="success"
+            type="button"
+            onClick={onSavePostClicked}
           >
-            <IonSelectOption value="Manchester City">
-              Manchester City
-            </IonSelectOption>
-            <IonSelectOption value="Real Madrid">Real Madrid</IonSelectOption>
-            <IonSelectOption value="Chealsea">Chealsea</IonSelectOption>
-            <IonSelectOption value="Arsenal">Arsenal</IonSelectOption>
-          </IonSelect>
-        </IonItem>
-      </IonList>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <IonButton
-          expand="full"
-          shape="round"
-          color="success"
-          type="button"
-          onClick={onSavePostClicked}
-        >
-          Salvar
-        </IonButton>
-        <IonButton
-          expand="full"
-          shape="round"
-          fill="outline"
-          color="dark"
-          type="button"
-          onClick={onDismissPostClicked}
-        >
-          Fechar
-        </IonButton>
-      </div>
+            Adicionar Jogador
+          </IonButton>
+        </>
+      ) : (
+        <IonSpinner className="loading" name="crescent" color="primary" />
+      )}
     </ModalContainer>
   );
 };
 
-const EditUser = ({ location, match }: any) => {
-  console.log("match", match);
-
+const EditUser = ({ match }: any) => {
   const { userId } = match.params;
 
   const post = useSelector((state: any) =>
@@ -179,32 +158,28 @@ const EditUser = ({ location, match }: any) => {
     }
   };
 
-  const onDismissPostClicked = () => {
-    history.push(`/`);
-  };
-
   return (
     <ModalContainer>
       <ModalContainerClose>
         <Link
           to={{
             pathname: `/`,
-            state: { modal: false },
           }}
-        >
-          close
-        </Link>
+        ></Link>
       </ModalContainerClose>
       <IonList>
         <IonItem>
+          <IonLabel position="floating">Nome do jogador</IonLabel>
           <IonInput
             value={name}
             placeholder="Name"
             onIonChange={onNameChanged}
+            type="text"
+            autocapitalize="true"
           ></IonInput>
         </IonItem>
         <IonItem>
-          <IonLabel>Conexão</IonLabel>
+          <IonLabel position="floating">Time</IonLabel>
           <IonSelect
             value={team}
             placeholder="Selecione"
@@ -219,38 +194,31 @@ const EditUser = ({ location, match }: any) => {
           </IonSelect>
         </IonItem>
       </IonList>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <IonButton
-          expand="full"
-          shape="round"
-          color="success"
-          type="button"
-          onClick={onSavePostClicked}
-        >
-          Salvar
-        </IonButton>
-        <IonButton
-          expand="full"
-          shape="round"
-          fill="outline"
-          color="dark"
-          type="button"
-          onClick={onDismissPostClicked}
-        >
-          Fechar
-        </IonButton>
-      </div>
+      <IonButton
+        expand="block"
+        shape="round"
+        color="warning"
+        type="button"
+        onClick={onSavePostClicked}
+      >
+        Editar Jogador
+      </IonButton>
     </ModalContainer>
   );
 };
 
 const App: React.FC = () => {
+  const postStatus = useSelector((state: RootState) => state.users.status);
   return (
     <IonApp>
       <IonReactRouter>
         <Header />
         <UsersContainer>
-          <UsersList />
+          {postStatus !== "pending" ? (
+            <UsersList />
+          ) : (
+            <IonSpinner className="loading" name="crescent" color="primary" />
+          )}
         </UsersContainer>
         <Switch>
           <Route path="/addUser" component={AddUser} />

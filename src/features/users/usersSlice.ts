@@ -18,7 +18,6 @@ export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
   const response = await axios.get(
     "https://620c58aab5736325938c1678.mockapi.io/api/v1/players"
   );
-  console.log(response.data);
   return response.data;
 });
 

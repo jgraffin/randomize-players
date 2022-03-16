@@ -1,5 +1,5 @@
-import { IonButton, IonItem, IonRippleEffect } from "@ionic/react";
-import { useEffect } from "react";
+import { IonButton, IonItem, IonRippleEffect, IonSpinner } from "@ionic/react";
+import { FC, ReactNode, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import { RootState } from "../../app/store";
@@ -45,8 +45,6 @@ const User = ({ post }: any) => {
   );
 };
 
-const NoResults = () => <p>Para o sorteio, comece adicionando os jogadores.</p>;
-
 export const UsersList = () => {
   const dispatch = useDispatch();
   const posts = useSelector(selectAllItems);
@@ -89,12 +87,18 @@ export const UsersList = () => {
   let content;
 
   if (postStatus === "loading") {
-    content = "Loading...";
+    <IonSpinner className="loading" name="crescent" color="primary" />;
   } else if (postStatus === "succeeded") {
     content = posts.length ? (
       posts.map((post: any) => <User key={post.id && post.id} post={post} />)
     ) : (
-      <NoResults />
+      <p>
+        Para o sorteio,
+        <br />
+        comece adicionando
+        <br />
+        os jogadores.
+      </p>
     );
   } else if (postStatus === "failed") {
     content = <div>{error}</div>;
@@ -102,25 +106,29 @@ export const UsersList = () => {
 
   return (
     <>
-      {/* <PlayersAmount>{playersAmount()}</PlayersAmount> */}
-      <ContainerList>{content}</ContainerList>
-      <AreaButtons>
-        <AddUserButton className="ion-activatable ripple-parent">
-          <Link
-            to={{
-              pathname: `/addUser`,
-            }}
-          >
-            +
-          </Link>
-          <IonRippleEffect></IonRippleEffect>
-        </AddUserButton>
-        {/* {posts.length > 2 && (
-          <RandomizePlayersButton className="ion-activatable ripple-parent">
-            <IonRippleEffect></IonRippleEffect>
-          </RandomizePlayersButton>
-        )} */}
-      </AreaButtons>
+      {postStatus !== "pending" ? (
+        <>
+          <PlayersAmount>{playersAmount()}</PlayersAmount>
+          <ContainerList>{content}</ContainerList>
+          <AreaButtons>
+            <AddUserButton className="ion-activatable ripple-parent">
+              <Link
+                to={{
+                  pathname: `/addUser`,
+                }}
+              ></Link>
+              <IonRippleEffect></IonRippleEffect>
+            </AddUserButton>
+            {posts.length > 2 && (
+              <RandomizePlayersButton className="ion-activatable ripple-parent">
+                <IonRippleEffect></IonRippleEffect>
+              </RandomizePlayersButton>
+            )}
+          </AreaButtons>
+        </>
+      ) : (
+        <IonSpinner className="loading" name="crescent" color="primary" />
+      )}
     </>
   );
 };

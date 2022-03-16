@@ -2,9 +2,11 @@ import styled, { keyframes } from "styled-components";
 
 const slideIn = keyframes`
   from {
+    opacity: 0;
     transform: translateY(100%);
   }
   to {
+    opacity: 1;
     transform: translateY(0);
   }
 `;
@@ -31,32 +33,53 @@ export const PlayersAmount = styled.div`
   top: 10rem;
   width: 100%;
   text-align: center;
+
+  p {
+    color: var(--ion-color-light);
+    font-size: 1.4rem;
+  }
 `;
 
 export const ModalContainer = styled.div`
   animation: ${slideIn} ease-in-out 0.4s forwards;
-  background-color: #d8d8d8;
+  background-color: var(--ion-color-primary-contrast);
   border-radius: 20px 20px 0 0;
-  width: 100%;
-  height: 300px;
-  position: fixed;
-  z-index: 999;
-  left: 0;
   bottom: 0;
-  padding: 20px;
+  height: 15rem;
+  left: 0;
+  padding: 2rem;
+  position: fixed;
+  width: 100%;
+  z-index: 999;
 `;
 
 export const ModalContainerClose = styled.div`
-  width: 30px;
-  height: 30px;
+  width: 2.5rem;
+  height: 2.5rem;
   position: absolute;
-  right: 0;
-  top: 0;
-  background: #781db9;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: -1.4rem;
+  border-radius: 90px;
+  background: var(--ion-color-primary);
   z-index: 30;
 
-  &::before {
-    content: "X";
+  a {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    height: 2.5rem;
+    width: 2.5rem;
+
+    &::before {
+      background: url("./assets/icon/icon-close.svg") no-repeat center center;
+      display: block;
+      content: "";
+      height: 2.5rem;
+      width: 2.5rem;
+    }
   }
 `;
 
@@ -71,14 +94,21 @@ export const AddUserButton = styled.div`
 
   a {
     align-items: center;
-    background-color: #781db9;
+    background-color: var(--ion-color-primary);
     color: var(--light);
     display: flex;
     font-size: 2rem;
-    height: 100%;
+    height: 4.2rem;
     justify-content: center;
     text-decoration: none;
-    width: 100%;
+    width: 4.2rem;
+
+    &::before {
+      background: url("./assets/icon/icon-plus.svg") no-repeat center center;
+      content: "";
+      height: 4.2rem;
+      width: 4.2rem;
+    }
   }
 
   &.ripple-parent {
@@ -122,10 +152,11 @@ export const AreaButtons = styled.div`
   bottom: 0;
   display: flex;
   grid-gap: 1rem;
-  height: 8rem;
+  height: 10rem;
   justify-content: center;
   left: 0;
   position: fixed;
+  padding-top: 3rem;
   width: 100%;
   z-index: 30;
 `;
