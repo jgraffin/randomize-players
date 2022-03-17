@@ -6,6 +6,7 @@ type UsersType = {
   id: string;
   name?: string;
   team?: string;
+  slugTeam?: string;
 };
 
 const initialState = {
@@ -37,11 +38,12 @@ const usersSlice = createSlice({
   initialState,
   reducers: {
     itemUpdated(state: RootState, action: PayloadAction<UsersType>) {
-      const { id, name, team } = action.payload;
+      const { id, name, team, slugTeam } = action.payload;
       const existingUser = state.items.find((item: any) => item.id === id);
       if (existingUser) {
         existingUser.name = name;
         existingUser.team = team;
+        existingUser.slug = slugTeam;
       }
 
       axios.put(
@@ -49,6 +51,7 @@ const usersSlice = createSlice({
         {
           name,
           team,
+          slugTeam,
         }
       );
     },

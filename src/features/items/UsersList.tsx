@@ -11,6 +11,8 @@ import {
 } from "../../styles/App";
 import { deletePost, fetchPosts, selectAllItems } from "../users/usersSlice";
 import { ContainerList } from "./ContainerList";
+import EditIcon from "./icon-edit.svg";
+import DeleteIcon from "./icon-delete.svg";
 
 const User = ({ post }: any) => {
   const dispatch = useDispatch();
@@ -19,29 +21,33 @@ const User = ({ post }: any) => {
   };
 
   return (
-    post.id && (
-      <IonItem className="ion-no-padding ion-no-border" key={post.id}>
+    <IonItem
+      className="content-item ion-no-padding ion-no-border"
+      key={post.id}
+    >
+      <div className="content-item__image">
+        <img src={`./assets/images/${post.slug}.png`} alt={post.team} />
+      </div>
+      <div className="content-item__text">
+        <h5>{post.team}</h5>
+        <h1>{post.name}</h1>
+      </div>
+      <div className="content-item__actions">
         <Link
           to={{
             pathname: `/editUser/${post.id}`,
           }}
-          style={{ display: "flex", alignItems: "center" }}
         >
-          <div style={{ width: "60px" }}>
-            <img src={`./assets/images/${post.id}.png`} alt={post.team} />
-          </div>
-          <div style={{ marginLeft: "20px" }}>
-            <h5>{post.team}</h5>
-            <h1>{post.name}</h1>
-          </div>
+          <img src={EditIcon} alt={`Delete ${post.name}`} />
         </Link>
-        <div>
-          <IonButton onClick={() => onDeletePostClicked(post.id)}>
-            delete
-          </IonButton>
-        </div>
-      </IonItem>
-    )
+        <IonButton
+          className="content-item__actions__delete ion-no-border"
+          onClick={() => onDeletePostClicked(post.id)}
+        >
+          <img src={DeleteIcon} alt={`Delete ${post.name}`} />
+        </IonButton>
+      </div>
+    </IonItem>
   );
 };
 
@@ -61,20 +67,21 @@ export const UsersList = () => {
           <strong>{"0" + amount}</strong> {`${singular}ES`}
         </p>
       );
+
+      if (amount > 9) {
+        paragraph = (
+          <p>
+            <strong>{amount}</strong> {`${singular}ES`}
+          </p>
+        );
+      }
     } else if (amount === 1) {
       paragraph = (
         <p>
           <strong>{"0" + amount}</strong> {`${singular}`}
         </p>
       );
-    } else if (amount > 9) {
-      paragraph = (
-        <p>
-          <strong>{"0" + amount}</strong> {`${singular}ES`}
-        </p>
-      );
     }
-
     return paragraph;
   };
 
@@ -104,9 +111,11 @@ export const UsersList = () => {
     content = <div>{error}</div>;
   }
 
+  console.log(postStatus);
+
   return (
     <>
-      {postStatus !== "pending" ? (
+      {postStatus !== "loading" ? (
         <>
           <PlayersAmount>{playersAmount()}</PlayersAmount>
           <ContainerList>{content}</ContainerList>

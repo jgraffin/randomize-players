@@ -41,29 +41,45 @@ import {
 import { addPost, itemUpdated } from "./features/users/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import Header from "./components/header/Header";
 import { RootState } from "./app/store";
+import Header from "./components/header/Header";
+import { teams } from "./features/teams/TeamsSlice";
 
 setupIonicReact();
 
 const AddUser = () => {
   const [name, setName] = useState("");
   const [team, setTeam] = useState("");
+  const [slug, setSlug] = useState("");
   const dispatch = useDispatch();
   const history = useHistory();
   const [addRequestStatus, setAddRequestStatus] = useState("idle");
   const canSave = [name, team].every(Boolean) && addRequestStatus === "idle";
 
+  const onSlugify = (value: string) => {
+    return value
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/[\s_-]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  };
+
   const onNameChanged = (e: any) => setName(e.target.value);
-  const onTeamChanged = (e: any) => setTeam(e.target.value);
+  const onTeamChanged = (e: any) => {
+    setTeam(e.target.value);
+    const slugName = onSlugify(e.target.value);
+    setSlug(slugName);
+  };
 
   const onSavePostClicked = async () => {
     if (canSave) {
       try {
         setAddRequestStatus("pending");
-        await dispatch(addPost({ name, team })).unwrap();
+        await dispatch(addPost({ name, team, slug })).unwrap();
         setName("");
         setTeam("");
+        setSlug("");
       } catch (err) {
         console.error("Failed to save the post: ", err);
       } finally {
@@ -102,14 +118,11 @@ const AddUser = () => {
                 placeholder="Selecione"
                 onIonChange={onTeamChanged}
               >
-                <IonSelectOption value="Manchester United">
-                  Manchester United
-                </IonSelectOption>
-                <IonSelectOption value="Real Madrid">
-                  Real Madrid
-                </IonSelectOption>
-                <IonSelectOption value="Chealsea">Chealsea</IonSelectOption>
-                <IonSelectOption value="Arsenal">Arsenal</IonSelectOption>
+                {teams.map((team: any) => (
+                  <IonSelectOption key={team.id} value={team.name}>
+                    {team.name}
+                  </IonSelectOption>
+                ))}
               </IonSelect>
             </IonItem>
           </IonList>
@@ -124,7 +137,10 @@ const AddUser = () => {
           </IonButton>
         </>
       ) : (
-        <IonSpinner className="loading" name="crescent" color="primary" />
+        <>
+          <IonSpinner className="loading" name="crescent" color="primary" />
+          <p>Aguarde...</p>
+        </>
       )}
     </ModalContainer>
   );
@@ -139,11 +155,25 @@ const EditUser = ({ match }: any) => {
 
   const [name, setName] = useState(post.name);
   const [team, setTeam] = useState(post.team);
+  const [slugTeam, setSlugTeam] = useState(post.slugTeam);
   const dispatch = useDispatch();
   const history = useHistory();
 
+  const onSlugify = (value: string) => {
+    return value
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/[\s_-]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  };
+
   const onNameChanged = (e: any) => setName(e.target.value);
-  const onTeamChanged = (e: any) => setTeam(e.target.value);
+  const onTeamChanged = (e: any) => {
+    setTeam(e.target.value);
+    const slugName = onSlugify(e.target.value);
+    setSlugTeam(slugName);
+  };
 
   const onSavePostClicked = () => {
     if (name) {
@@ -152,6 +182,7 @@ const EditUser = ({ match }: any) => {
           id: userId,
           name,
           team,
+          slugTeam,
         })
       );
       history.push(`/`);
@@ -185,12 +216,11 @@ const EditUser = ({ match }: any) => {
             placeholder="Selecione"
             onIonChange={onTeamChanged}
           >
-            <IonSelectOption value="Manchester City">
-              Manchester City
-            </IonSelectOption>
-            <IonSelectOption value="Real Madrid">Real Madrid</IonSelectOption>
-            <IonSelectOption value="Chealsea">Chealsea</IonSelectOption>
-            <IonSelectOption value="Arsenal">Arsenal</IonSelectOption>
+            {teams.map((team: any) => (
+              <IonSelectOption key={team.id} value={team.name}>
+                {team.name}
+              </IonSelectOption>
+            ))}
           </IonSelect>
         </IonItem>
       </IonList>

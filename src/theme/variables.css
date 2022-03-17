@@ -318,3 +318,15 @@ html.md {
   top: 50%;
   margin-top: -1rem;
 }
+
+.loading + p {
+  bottom: 3rem;
+  color: var(--ion-color-dark-shade);
+  display: block;
+  font-family: var(--font-family-bold);
+  font-size: 1.1rem;
+  left: 0;
+  position: fixed;
+  text-align: center;
+  width: 100%;
+}
