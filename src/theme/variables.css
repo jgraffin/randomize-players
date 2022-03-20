@@ -282,6 +282,11 @@ http://ionicframework.com/docs/theming/ */
   );
 }
 
+.md.content-ltr,
+.ios.content-ltr {
+  --background: transparent;
+}
+
 html.ios,
 html.md {
   --ion-default-font: var(--font-family-regular);
@@ -320,13 +325,14 @@ html.md {
 }
 
 .loading + p {
-  bottom: 3rem;
-  color: var(--ion-color-dark-shade);
+  top: 50%;
+  color: var(--ion-color-primary-contrast);
   display: block;
   font-family: var(--font-family-bold);
   font-size: 1.1rem;
   left: 0;
   position: fixed;
   text-align: center;
+  margin-top: 2rem;
   width: 100%;
 }

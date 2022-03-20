@@ -1,4 +1,13 @@
-import { IonButton, IonItem, IonRippleEffect, IonSpinner } from "@ionic/react";
+import {
+  IonButton,
+  IonContent,
+  IonItem,
+  IonRefresher,
+  IonRefresherContent,
+  IonRippleEffect,
+  IonSpinner,
+  RefresherEventDetail,
+} from "@ionic/react";
 import { FC, ReactNode, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
@@ -57,6 +66,16 @@ export const UsersList = () => {
   const postStatus = useSelector((state: RootState) => state.users.status);
   const error = useSelector((state: RootState) => state.users.error);
 
+  const doRefresh = (event: CustomEvent<RefresherEventDetail>) => {
+    console.log("Begin async operation");
+    // dispatch(fetchPosts());
+
+    setTimeout(() => {
+      console.log("Async operation has ended");
+      event.detail.complete();
+    }, 2000);
+  };
+
   const playersAmount = () => {
     const singular = "JOGADOR";
     const amount = posts.length;
@@ -97,7 +116,7 @@ export const UsersList = () => {
     <IonSpinner className="loading" name="crescent" color="primary" />;
   } else if (postStatus === "succeeded") {
     content = posts.length ? (
-      posts.map((post: any) => <User key={post.id && post.id} post={post} />)
+      posts.map((post: any) => <User key={post.id} post={post} />)
     ) : (
       <p>
         Para o sorteio,
@@ -116,7 +135,10 @@ export const UsersList = () => {
   return (
     <>
       {postStatus !== "loading" ? (
-        <>
+        <IonContent>
+          <IonRefresher slot="fixed" onIonRefresh={doRefresh}>
+            <IonRefresherContent></IonRefresherContent>
+          </IonRefresher>
           <PlayersAmount>{playersAmount()}</PlayersAmount>
           <ContainerList>{content}</ContainerList>
           <AreaButtons>
@@ -134,7 +156,7 @@ export const UsersList = () => {
               </RandomizePlayersButton>
             )}
           </AreaButtons>
-        </>
+        </IonContent>
       ) : (
         <IonSpinner className="loading" name="crescent" color="primary" />
       )}

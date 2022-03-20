@@ -41,16 +41,27 @@ export const PlayersAmount = styled.div`
 `;
 
 export const ModalContainer = styled.div`
-  animation: ${slideIn} ease-in-out 0.4s forwards;
-  background-color: var(--ion-color-primary-contrast);
-  border-radius: 20px 20px 0 0;
+  align-items: flex-end;
+  background: rgba(0, 0, 0, 0.6);
   bottom: 0;
-  height: 15rem;
-  left: 0;
-  padding: 2rem;
+  display: flex;
+  height: 100%;
+  left: 0%;
   position: fixed;
   width: 100%;
   z-index: 999;
+  transition: ease-in-out 0.3s;
+
+  .wrapper {
+    animation: ${slideIn} ease-in-out 0.4s forwards;
+    background-color: var(--ion-color-primary-contrast);
+    border-radius: 20px 20px 0 0;
+    bottom: 0;
+    left: 0;
+    padding: 2rem;
+    width: 100%;
+    z-index: 99;
+  }
 `;
 
 export const ModalContainerClose = styled.div`

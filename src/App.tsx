@@ -2,17 +2,20 @@ import { Link, Redirect, Route, Switch, useHistory } from "react-router-dom";
 import {
   IonApp,
   IonButton,
+  IonContent,
   IonInput,
   IonItem,
   IonLabel,
   IonList,
+  IonRefresher,
+  IonRefresherContent,
   IonSelect,
   IonSelectOption,
   IonSpinner,
+  RefresherEventDetail,
   setupIonicReact,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import Shield1 from "./images/1.png";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -38,9 +41,13 @@ import {
   ModalContainerClose,
   UsersContainer,
 } from "./styles/App";
-import { addPost, itemUpdated } from "./features/users/usersSlice";
+import {
+  addPost,
+  itemUpdated,
+  selectAllItems,
+} from "./features/users/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RootState } from "./app/store";
 import Header from "./components/header/Header";
 import { teams } from "./features/teams/TeamsSlice";
@@ -51,9 +58,12 @@ const AddUser = () => {
   const [name, setName] = useState("");
   const [team, setTeam] = useState("");
   const [slug, setSlug] = useState("");
+  const [newArray, setNewArray] = useState<any>(teams);
+  const [addRequestStatus, setAddRequestStatus] = useState("idle");
+
+  const posts = useSelector(selectAllItems);
   const dispatch = useDispatch();
   const history = useHistory();
-  const [addRequestStatus, setAddRequestStatus] = useState("idle");
   const canSave = [name, team].every(Boolean) && addRequestStatus === "idle";
 
   const onSlugify = (value: string) => {
@@ -89,10 +99,18 @@ const AddUser = () => {
     }
   };
 
+  useEffect(() => {
+    const newValue = teams.filter((item: any) => {
+      return posts.every((newItem: any) => item.slug !== newItem.slug);
+    });
+
+    setNewArray(newValue);
+  }, [posts]);
+
   return (
     <ModalContainer>
       {addRequestStatus !== "pending" ? (
-        <>
+        <div className="wrapper">
           <ModalContainerClose>
             <Link
               to={{
@@ -118,7 +136,7 @@ const AddUser = () => {
                 placeholder="Selecione"
                 onIonChange={onTeamChanged}
               >
-                {teams.map((team: any) => (
+                {newArray.map((team: any) => (
                   <IonSelectOption key={team.id} value={team.name}>
                     {team.name}
                   </IonSelectOption>
@@ -135,10 +153,10 @@ const AddUser = () => {
           >
             Adicionar Jogador
           </IonButton>
-        </>
+        </div>
       ) : (
         <>
-          <IonSpinner className="loading" name="crescent" color="primary" />
+          <IonSpinner className="loading" name="crescent" color="light" />
           <p>Aguarde...</p>
         </>
       )}
@@ -153,9 +171,12 @@ const EditUser = ({ match }: any) => {
     state.users.items.find((user: any) => user.id === userId)
   );
 
+  const postsEdit = useSelector(selectAllItems);
+
   const [name, setName] = useState(post.name);
   const [team, setTeam] = useState(post.team);
-  const [slugTeam, setSlugTeam] = useState(post.slugTeam);
+  const [slug, setSlug] = useState(post.slug);
+  const [newArrayEdit, setNewArrayEdit] = useState<any>(teams);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -172,73 +193,82 @@ const EditUser = ({ match }: any) => {
   const onTeamChanged = (e: any) => {
     setTeam(e.target.value);
     const slugName = onSlugify(e.target.value);
-    setSlugTeam(slugName);
+    setSlug(slugName);
   };
 
   const onSavePostClicked = () => {
-    if (name) {
-      dispatch(
-        itemUpdated({
-          id: userId,
-          name,
-          team,
-          slugTeam,
-        })
-      );
-      history.push(`/`);
-    }
+    dispatch(
+      itemUpdated({
+        id: userId,
+        name,
+        team,
+        slug,
+      })
+    );
+    history.push(`/`);
   };
+
+  useEffect(() => {
+    const newValue = teams.filter((item: any) => {
+      return postsEdit.every((newItem: any) => item.slug !== newItem.slug);
+    });
+
+    setNewArrayEdit(newValue);
+  }, [postsEdit]);
 
   return (
     <ModalContainer>
-      <ModalContainerClose>
-        <Link
-          to={{
-            pathname: `/`,
-          }}
-        ></Link>
-      </ModalContainerClose>
-      <IonList>
-        <IonItem>
-          <IonLabel position="floating">Nome do jogador</IonLabel>
-          <IonInput
-            value={name}
-            placeholder="Name"
-            onIonChange={onNameChanged}
-            type="text"
-            autocapitalize="true"
-          ></IonInput>
-        </IonItem>
-        <IonItem>
-          <IonLabel position="floating">Time</IonLabel>
-          <IonSelect
-            value={team}
-            placeholder="Selecione"
-            onIonChange={onTeamChanged}
-          >
-            {teams.map((team: any) => (
-              <IonSelectOption key={team.id} value={team.name}>
-                {team.name}
-              </IonSelectOption>
-            ))}
-          </IonSelect>
-        </IonItem>
-      </IonList>
-      <IonButton
-        expand="block"
-        shape="round"
-        color="warning"
-        type="button"
-        onClick={onSavePostClicked}
-      >
-        Editar Jogador
-      </IonButton>
+      <div className="wrapper">
+        <ModalContainerClose>
+          <Link
+            to={{
+              pathname: `/`,
+            }}
+          ></Link>
+        </ModalContainerClose>
+        <IonList>
+          <IonItem>
+            <IonLabel position="floating">Nome do jogador</IonLabel>
+            <IonInput
+              value={name}
+              placeholder="Name"
+              onIonChange={onNameChanged}
+              type="text"
+              autocapitalize="true"
+            ></IonInput>
+          </IonItem>
+          <IonItem>
+            <IonLabel position="floating">Time</IonLabel>
+            <IonSelect
+              value={team}
+              placeholder="Selecione"
+              onIonChange={onTeamChanged}
+            >
+              {newArrayEdit.map((team: any) => (
+                <IonSelectOption key={team.id} value={team.name}>
+                  {team.name}
+                </IonSelectOption>
+              ))}
+            </IonSelect>
+          </IonItem>
+        </IonList>
+        <IonButton
+          expand="block"
+          shape="round"
+          color="warning"
+          type="button"
+          onClick={onSavePostClicked}
+        >
+          Editar Jogador
+        </IonButton>
+      </div>
     </ModalContainer>
   );
 };
 
 const App: React.FC = () => {
   const postStatus = useSelector((state: RootState) => state.users.status);
+
   return (
     <IonApp>
       <IonReactRouter>
