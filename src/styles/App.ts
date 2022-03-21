@@ -61,6 +61,12 @@ export const ModalContainer = styled.div`
     padding: 2rem;
     width: 100%;
     z-index: 99;
+
+    &.wrapper--shuffled {
+      animation: none;
+      border-radius: 0;
+      height: 100%;
+    }
   }
 `;
 
@@ -138,12 +144,18 @@ export const RandomizePlayersButton = styled.div`
   justify-content: center;
   width: 4.2rem;
 
-  &::before {
-    content: "";
-    width: 100%;
-    height: 100%;
+  a {
     display: block;
-    background: url("./assets/icon/icon-random.svg") no-repeat center center;
+    height: 4.2rem;
+    width: 4.2rem;
+
+    &::before {
+      content: "";
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: url("./assets/icon/icon-random.svg") no-repeat center center;
+    }
   }
 
   &.ripple-parent {

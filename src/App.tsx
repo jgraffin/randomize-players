@@ -1,4 +1,11 @@
-import { Link, Redirect, Route, Switch, useHistory } from "react-router-dom";
+import {
+  Link,
+  Redirect,
+  Route,
+  Switch,
+  useHistory,
+  useLocation,
+} from "react-router-dom";
 import {
   IonApp,
   IonButton,
@@ -7,6 +14,7 @@ import {
   IonItem,
   IonLabel,
   IonList,
+  IonPage,
   IonRefresher,
   IonRefresherContent,
   IonSelect,
@@ -172,7 +180,6 @@ const EditUser = ({ match }: any) => {
   );
 
   const postsEdit = useSelector(selectAllItems);
-
   const [name, setName] = useState(post.name);
   const [team, setTeam] = useState(post.team);
   const [slug, setSlug] = useState(post.slug);
@@ -266,6 +273,60 @@ const EditUser = ({ match }: any) => {
   );
 };
 
+const ShuffleUsers = () => {
+  const location = useLocation();
+  const { data } = location.state as any;
+  const [hasRandom, setHasRandom] = useState(false);
+
+  const shuffledItems = [...data];
+
+  for (let i = shuffledItems.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = shuffledItems[i];
+    shuffledItems[i] = shuffledItems[j];
+    shuffledItems[j] = temp;
+  }
+
+  useEffect(() => {
+    setTimeout(() => {
+      setHasRandom(true);
+    }, 3000);
+  }, []);
+
+  return (
+    <ModalContainer>
+      <div className="wrapper wrapper--shuffled">
+        {hasRandom ? (
+          <>
+            <ul>
+              {shuffledItems.map((item: any) => (
+                <li key={item.id}>{item.name}</li>
+              ))}
+            </ul>
+            <Link
+              className="button primary"
+              to={{
+                pathname: `/`,
+              }}
+            >
+              Voltar
+            </Link>
+          </>
+        ) : (
+          <>
+            <IonSpinner
+              className="loading loading--shuffle"
+              name="crescent"
+              color="primary"
+            />
+            <p>Sorteando jogadores, aguarde...</p>
+          </>
+        )}
+      </div>
+    </ModalContainer>
+  );
+};
+
 const App: React.FC = () => {
   const postStatus = useSelector((state: RootState) => state.users.status);
 
@@ -283,6 +344,7 @@ const App: React.FC = () => {
         <Switch>
           <Route path="/addUser" component={AddUser} />
           <Route path="/editUser/:userId" component={EditUser} />
+          <Route exact path="/shuffleUsers" component={ShuffleUsers} />
           <Redirect to="/" />
         </Switch>
       </IonReactRouter>

@@ -130,8 +130,6 @@ export const UsersList = () => {
     content = <div>{error}</div>;
   }
 
-  console.log(postStatus);
-
   return (
     <>
       {postStatus !== "loading" ? (
@@ -152,6 +150,12 @@ export const UsersList = () => {
             </AddUserButton>
             {posts.length > 2 && (
               <RandomizePlayersButton className="ion-activatable ripple-parent">
+                <Link
+                  to={{
+                    pathname: `/shuffleUsers`,
+                    state: { data: posts },
+                  }}
+                ></Link>
                 <IonRippleEffect></IonRippleEffect>
               </RandomizePlayersButton>
             )}

@@ -336,3 +336,7 @@ html.md {
   margin-top: 2rem;
   width: 100%;
 }
+
+.loading.loading--shuffle + p {
+  color: var(--ion-color-primary);
+}
