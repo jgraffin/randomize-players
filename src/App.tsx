@@ -59,6 +59,7 @@ import { useEffect, useState } from "react";
 import { RootState } from "./app/store";
 import Header from "./components/header/Header";
 import { teams } from "./features/teams/TeamsSlice";
+import { setUncaughtExceptionCaptureCallback } from "process";
 
 setupIonicReact();
 
@@ -277,6 +278,7 @@ const ShuffleUsers = () => {
   const location = useLocation();
   const { data } = location.state as any;
   const [hasRandom, setHasRandom] = useState(false);
+  const [keysQuantity, setKeysQuantity] = useState("3");
 
   const shuffledItems = [...data];
 
@@ -288,6 +290,8 @@ const ShuffleUsers = () => {
   }
 
   useEffect(() => {
+    setKeysQuantity(String(shuffledItems.length));
+
     setTimeout(() => {
       setHasRandom(true);
     }, 3000);
@@ -298,9 +302,22 @@ const ShuffleUsers = () => {
       <div className="wrapper wrapper--shuffled">
         {hasRandom ? (
           <>
-            <ul>
+            <ul className={`list list-${keysQuantity}`}>
               {shuffledItems.map((item: any) => (
-                <li key={item.id}>{item.name}</li>
+                <li key={item.id}>
+                  <span className="lines-start">
+                    <strong></strong>
+                  </span>
+                  <span className="list__image">
+                    <img
+                      src={`./assets/images/${item.slug}.png`}
+                      alt={item.name}
+                    />
+                  </span>
+                  <span className="lines-end">
+                    <strong></strong>
+                  </span>
+                </li>
               ))}
             </ul>
             <Link
