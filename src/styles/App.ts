@@ -52,25 +52,69 @@ export const ModalContainer = styled.div`
   z-index: 999;
   transition: ease-in-out 0.3s;
 
+  .modal-container-title {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 3rem;
+    text-align: center;
+    z-index: 991;
+
+    h2 {
+      color: var(--ion-color-dark);
+      font-family: var(--font-family-bold);
+      font-size: 1.2rem;
+    }
+  }
+
   .wrapper {
     animation: ${slideIn} ease-in-out 0.4s forwards;
     background-color: var(--ion-color-primary-contrast);
     border-radius: 20px 20px 0 0;
     bottom: 0;
     left: 0;
-    padding: 2rem;
     width: 100%;
     z-index: 99;
+    padding: 2rem;
 
     &.wrapper--shuffled {
+      background-color: var(--ion-color-light);
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 0;
       animation: none;
       border-radius: 0;
       height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-grow: 1;
 
       .list {
-        list-style-type: ordinal;
+        display: block;
         padding: 0;
         position: relative;
+
+        .list__image {
+          position: relative;
+
+          &::before {
+            content: attr(data-player-name);
+            color: var(--ion-color-dark);
+            width: 2.5rem;
+            height: 2rem;
+            position: absolute;
+            left: 0;
+            bottom: -25px;
+            display: flex;
+            align-items: center;
+            text-transform: uppercase;
+            font-family: var(--font-family-bold);
+            font-size: 0.6rem;
+            justify-content: center;
+          }
+        }
 
         img {
           display: block;
@@ -91,74 +135,10 @@ export const ModalContainer = styled.div`
           position: relative;
         }
 
-        &.list-3 {
-          li {
-            &:nth-child(3) {
-              margin-left: 5rem;
-            }
-
-            &:nth-child(4),
-            &:nth-child(5),
-            &:nth-child(6) {
-              position: absolute;
-              right: 0;
-              top: 0;
-            }
-
-            &:nth-child(5) {
-              top: 3rem;
-            }
-
-            &:nth-child(6) {
-              top: 6rem;
-              right: 5rem;
-            }
-          }
-        }
-
-        &.list-4 {
-          li {
-            &:nth-child(3),
-            &:nth-child(4) {
-              position: absolute;
-              right: 0;
-              top: 0;
-            }
-
-            &:nth-child(3) {
-              top: 0;
-            }
-
-            &:nth-child(4) {
-              top: 3rem;
-            }
-          }
-        }
-
-        &.list-5 {
-          li {
-            &:nth-child(3) {
-              margin-left: 5rem;
-            }
-
-            &:nth-child(4),
-            &:nth-child(5) {
-              position: absolute;
-              right: 0;
-              top: 0;
-            }
-
-            &:nth-child(4) {
-              top: 0;
-            }
-
-            &:nth-child(5) {
-              top: 3rem;
-            }
-          }
-        }
-
+        // ------ Until 6 players
         &.list-6 {
+          width: 600px;
+
           li {
             .lines-start {
               position: absolute;
@@ -175,7 +155,7 @@ export const ModalContainer = styled.div`
                 position: absolute;
                 left: 0;
                 top: -2px;
-                background: red;
+                background: var(--ion-color-dark);
               }
 
               &::after {
@@ -199,7 +179,7 @@ export const ModalContainer = styled.div`
                     content: "2";
                     width: 2rem;
                     height: 2rem;
-                    background: red;
+                    background: var(--ion-color-dark);
                     position: absolute;
                     left: 0;
                     top: 0;
@@ -207,6 +187,7 @@ export const ModalContainer = styled.div`
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                    z-index: 4;
                   }
 
                   &::after {
@@ -215,7 +196,7 @@ export const ModalContainer = styled.div`
                     height: 2px;
                     left: 25px;
                     top: 16px;
-                    background: red;
+                    background: var(--ion-color-dark);
                   }
                 }
 
@@ -241,12 +222,13 @@ export const ModalContainer = styled.div`
                   position: absolute;
                   left: 80%;
                   margin: -3px 90px;
+                  z-index: 2;
 
                   &::after {
                     content: "FINAL";
                     width: 4rem;
                     padding: 0.4rem;
-                    background: red;
+                    background: var(--ion-color-dark);
                     position: absolute;
                     left: 0;
                     top: -12px;
@@ -254,6 +236,8 @@ export const ModalContainer = styled.div`
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                    font-family: var(--font-family-bold);
+                    font-size: 0.9rem;
                   }
 
                   &:before {
@@ -262,18 +246,18 @@ export const ModalContainer = styled.div`
                     height: 12rem;
                     position: absolute;
                     left: 0;
-                    top: -160px;
+                    top: -150px;
                     background: url("./assets/images/trophy.png") no-repeat
                       center center;
-                    background-size: 38%;
+                    background-size: 33px;
                   }
                 }
 
                 &::after {
                   content: "";
-                  width: 30%;
+                  width: 40%;
                   height: 2px;
-                  background: red;
+                  background: var(--ion-color-dark);
                   left: 100%;
                   top: 0;
                   bottom: 6rem;
@@ -291,7 +275,7 @@ export const ModalContainer = styled.div`
                     content: "";
                     width: 2px;
                     height: 3.5rem;
-                    background: red;
+                    background: var(--ion-color-dark);
                     top: auto;
                     left: 15px;
                     bottom: 100%;
@@ -302,7 +286,7 @@ export const ModalContainer = styled.div`
                     content: "5";
                     width: 2rem;
                     height: 2rem;
-                    background: red;
+                    background: var(--ion-color-dark);
                     position: absolute;
                     left: 0;
                     top: -12px;
@@ -310,6 +294,7 @@ export const ModalContainer = styled.div`
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                    z-index: 4;
                   }
                 }
 
@@ -320,123 +305,131 @@ export const ModalContainer = styled.div`
               }
             }
 
-            /* + li {
-              .list__pseudo--before__inner {
-                position: absolute;
-                height: 7rem;
-                right: -23px;
-                top: -38px;
-                left: 100%;
-                width: 18%;
-
-                strong {
-                  width: 2.5rem;
-                  height: 2.5rem;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  position: absolute;
-                  right: auto;
-                  left: -19px;
-                  top: 0;
-                  background: red;
-                  border-radius: 90px;
-                }
-
-                &::before,
-                &::after {
-                  content: "";
-                  width: 100%;
-                  height: 2px;
-                  position: absolute;
-                  left: 100%;
-                  top: 20px;
-                  background: red;
-                }
-
-                &::after {
-                  width: 2px;
-                  height: 100%;
-                  right: 0;
-                  left: 200%;
-                }
-              }
-            } */
-
-            /* &:nth-child(2) {
-              .list__pseudo {
-                &::after {
-                  top: 0;
-                }
-              }
-            } */
-
-            /* &:nth-child(3) {
-              margin-left: 3.4rem;
-
-              .list__pseudo.list__pseudo--before {
-                &::after {
-                  display: none;
-                }
-
-                .list__pseudo--before__inner {
-                  top: -55px;
-
-                  &::before {
-                    width: 500%;
-                  }
-
-                  &::after {
-                    display: none;
-                  }
-                }
-              }
-            } */
-
-            /* &:nth-child(4),
+            &:nth-child(4),
             &:nth-child(5),
             &:nth-child(6) {
               position: absolute;
-              right: 0;
-              top: 0;
-            } */
+              right: -244px;
+              top: -3px;
 
-            /* &:nth-child(4) {
-              top: 0;
+              .lines-start {
+                left: auto;
+                right: 100%;
 
-              .list__pseudo--before {
-                &::before {
+                &::before,
+                &::after {
+                  background: var(--ion-color-dark);
+                }
+
+                &::after {
                   left: auto;
                   right: 100%;
-                  top: 20px;
                 }
               }
             }
 
             &:nth-child(5) {
-              top: 3rem;
+              top: 73px;
 
-              .list__pseudo--before {
-                &::before {
+              .lines-start {
+                strong {
+                  position: absolute;
+                  top: -55%;
                   left: auto;
-                  right: 100%;
-                  top: 20px;
+                  right: 81%;
+                  z-index: 2;
+
+                  &::before,
+                  &::after {
+                    content: "3";
+                    width: 2rem;
+                    height: 2rem;
+                    background: var(--ion-color-dark);
+                    position: absolute;
+                    left: -33px;
+                    top: 0;
+                    border-radius: 90px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 4;
+                  }
+
+                  &::after {
+                    content: "";
+                    width: 4rem;
+                    height: 2px;
+                    left: auto;
+                    right: 25px;
+                    top: 13px;
+                    background: var(--ion-color-dark);
+                  }
+                }
+
+                &::after {
+                  bottom: 100%;
+                  top: auto;
                 }
               }
             }
 
             &:nth-child(6) {
-              top: 6rem;
-              right: 5rem;
+              margin-right: 5rem;
+              margin-top: 11rem;
 
-              .list__pseudo--before {
-                &::before {
-                  left: auto;
-                  right: 100%;
-                  top: 20px;
+              .lines-start {
+                strong {
+                  &::before {
+                    content: "";
+                    width: 2px;
+                    height: 3.5rem;
+                    background: var(--ion-color-dark);
+                    top: -108px;
+                    left: -2px;
+                    bottom: 100%;
+                    position: absolute;
+                  }
+
+                  &::after {
+                    content: "6";
+                    width: 2rem;
+                    height: 2rem;
+                    background: var(--ion-color-dark);
+                    position: absolute;
+                    left: -18px;
+                    top: -63px;
+                    border-radius: 90px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 4;
+                  }
+                }
+                &::after {
+                  top: auto;
+                  bottom: 100%;
                 }
               }
-            } */
+
+              .lines-end {
+                strong {
+                  position: absolute;
+                  right: 80%;
+                  margin: -3px 90px;
+                }
+
+                &::after {
+                  content: "";
+                  width: 100%;
+                  height: 2px;
+                  background: var(--ion-color-dark);
+                  right: 154px;
+                  top: -27px;
+                  bottom: 0;
+                  position: absolute;
+                }
+              }
+            }
           }
         }
       }
@@ -549,11 +542,37 @@ export const AreaButtons = styled.div`
   bottom: 0;
   display: flex;
   grid-gap: 1rem;
-  height: 10rem;
+  height: 15rem;
   justify-content: center;
   left: 0;
   position: fixed;
   padding-top: 3rem;
   width: 100%;
   z-index: 30;
+`;
+
+export const ButtonGoBack = styled.div`
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  width: 8rem;
+  position: fixed;
+  left: 50%;
+  margin-left: -4rem;
+  bottom: 2rem;
+
+  a {
+    color: var(--ion-color-light);
+    background: var(--ion-color-primary);
+    border-radius: 90px;
+    font-family: var(--font-family-bold);
+    text-decoration: none;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem;
+    line-height: 1.4rem;
+    font-size: 1.2rem;
+  }
 `;

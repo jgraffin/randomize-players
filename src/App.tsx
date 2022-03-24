@@ -45,6 +45,7 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.css";
 import { UsersList } from "./features/items/UsersList";
 import {
+  ButtonGoBack,
   ModalContainer,
   ModalContainerClose,
   UsersContainer,
@@ -59,7 +60,6 @@ import { useEffect, useState } from "react";
 import { RootState } from "./app/store";
 import Header from "./components/header/Header";
 import { teams } from "./features/teams/TeamsSlice";
-import { setUncaughtExceptionCaptureCallback } from "process";
 
 setupIonicReact();
 
@@ -289,16 +289,23 @@ const ShuffleUsers = () => {
     shuffledItems[j] = temp;
   }
 
+  const trimName = (name: string) => name.substring(0, 3);
+
   useEffect(() => {
     setKeysQuantity(String(shuffledItems.length));
 
     setTimeout(() => {
       setHasRandom(true);
     }, 3000);
-  }, []);
+  }, [shuffledItems.length]);
 
   return (
     <ModalContainer>
+      {hasRandom && (
+        <div className="modal-container-title">
+          <h2>Sorteio dos times</h2>
+        </div>
+      )}
       <div className="wrapper wrapper--shuffled">
         {hasRandom ? (
           <>
@@ -308,10 +315,13 @@ const ShuffleUsers = () => {
                   <span className="lines-start">
                     <strong></strong>
                   </span>
-                  <span className="list__image">
+                  <span
+                    className="list__image"
+                    data-player-name={trimName(item.name)}
+                  >
                     <img
                       src={`./assets/images/${item.slug}.png`}
-                      alt={item.name}
+                      alt={trimName(item.name)}
                     />
                   </span>
                   <span className="lines-end">
@@ -320,14 +330,16 @@ const ShuffleUsers = () => {
                 </li>
               ))}
             </ul>
-            <Link
-              className="button primary"
-              to={{
-                pathname: `/`,
-              }}
-            >
-              Voltar
-            </Link>
+            <ButtonGoBack>
+              <Link
+                className="button primary"
+                to={{
+                  pathname: `/`,
+                }}
+              >
+                Voltar
+              </Link>
+            </ButtonGoBack>
           </>
         ) : (
           <>
