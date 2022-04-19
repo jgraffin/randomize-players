@@ -130,9 +130,17 @@ export const ModalContainer = styled.div`
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 4rem;
+          width: 18vw;
           margin: 2rem 0.5rem 2rem 0.5rem;
           position: relative;
+
+          /* &:nth-child(2) {
+            top: 4.6rem;
+          } */
+
+          &:nth-child(3) {
+            margin-top: 11.2rem;
+          }
         }
 
         // ------ Until 6 players
